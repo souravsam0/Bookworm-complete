@@ -2,17 +2,20 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
-
     username: {
         type: String,
         required: true,
         unique: true
     },
-
-    email:{
+    email: {
         type: String,
-        required: true,
-        unique: true
+        unique: true,
+        sparse: true // Allows null/undefined values to not count for uniqueness
+    },
+    phoneNumber: {
+        type: String,
+        unique: true,
+        sparse: true // Allows for users without phone numbers (legacy users)
     },
     password: {
         type: String,
@@ -21,22 +24,21 @@ const userSchema = new mongoose.Schema({
     },
     profileImage: {
         type: String,
-        default:""
+        default: ""
     }
-},{
+}, {
     timestamps: true
 });
 
 // hash the password before saving user to database
 userSchema.pre("save", async function(next) {
-
     if(!this.isModified("password")) return next();
 
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 
     next();
-})
+});
 
 // compare password func
 userSchema.methods.comparePassword = async function (userPassword){

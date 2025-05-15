@@ -3,29 +3,46 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Touchable,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  TextInput,
+  ActivityIndicator
 } from "react-native";
 import styles from "../../assets/styles/login.styles";
-import { useState } from "react";
-import { TextInput } from "react-native";
-import { ActivityIndicator } from "react-native";
+import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
-import { Link } from "expo-router";
 import { useAuthStore } from "../../store/authStore";
-import { Alert } from "react-native";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState("false");
-  const {isCheckingAuth, isLoading, login} = useAuthStore();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const {isCheckingAuth, isLoading, requestOtp, verifyOtp, isOtpSent} = useAuthStore();
 
-  const handleLogin = async () => {
-    // handle login logic here
-    const result = await login(email, password);
+  const handleRequestOtp = async () => {
+    // Simple validation for phone number
+    if (!phoneNumber || phoneNumber.length < 10) {
+      Alert.alert("Error", "Please enter a valid phone number");
+      return;
+    }
+
+    const result = await requestOtp(phoneNumber);
+
+    if (!result.success) {
+      Alert.alert("Error", result.error);
+    } else {
+      Alert.alert("Success", "OTP sent to your phone number");
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length < 4) {
+      Alert.alert("Error", "Please enter a valid OTP");
+      return;
+    }
+
+    const result = await verifyOtp(otp);
 
     if (!result.success) {
       Alert.alert("Error", result.error);
@@ -49,11 +66,17 @@ export default function Login() {
         </View>
         <View style={styles.card}>
           <View style={styles.formContainer}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Bookworm🦦</Text>
+              <Text style={styles.subtitle}>Login with your phone number</Text>
+            </View>
+            
+            {/* Phone Number Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Phone Number</Text>
               <View style={styles.inputContainer}>
                 <Ionicons
-                  name="mail-outline"
+                  name="call-outline"
                   size={20}
                   color={COLORS.primary}
                   style={styles.inputIcon}
@@ -61,70 +84,76 @@ export default function Login() {
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your email!"
+                  placeholder="Enter your phone number"
                   placeholderTextColor={COLORS.placeholderText}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                  keyboardType="phone-pad"
+                  editable={!isOtpSent}
                 />
               </View>
             </View>
 
-            {/* Password Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.inputContainer}>
-                {/* LEFT ICON*/}
-                <Ionicons
-                  name="lock-closed-outline"
-                  size={20}
-                  color={COLORS.primary}
-                  style={styles.inputIcon}
-                />
-
-                {/* INPUT */}
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your Password"
-                  placeholderTextColor={COLORS.placeholderText}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                />
-
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
+            {/* OTP Input (only shown after OTP is sent) */}
+            {isOtpSent && (
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>OTP Code</Text>
+                <View style={styles.inputContainer}>
                   <Ionicons
-                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    name="lock-closed-outline"
                     size={20}
                     color={COLORS.primary}
+                    style={styles.inputIcon}
                   />
+
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter OTP code"
+                    placeholderTextColor={COLORS.placeholderText}
+                    value={otp}
+                    onChangeText={setOtp}
+                    keyboardType="number-pad"
+                    maxLength={6}
+                  />
+                </View>
+              </View>
+            )}
+
+            {!isOtpSent ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleRequestOtp}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>Send OTP</Text>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <View>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleVerifyOtp}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Verify OTP</Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.resendButton}
+                  onPress={handleRequestOtp}
+                  disabled={isLoading}
+                >
+                  <Text style={styles.resendText}>Resend OTP</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Login</Text>
-              )}
-            </TouchableOpacity>
-
-            {/* FOOTER */}
-            <View style={styles.footer}>
-              <Text style={styles.footertext}>Don't have an account?</Text>
-              <Link href="/signup">
-                <Text style={styles.link}>Sign Up</Text>
-              </Link>
-            </View>
+            )}
           </View>
         </View>
       </View>

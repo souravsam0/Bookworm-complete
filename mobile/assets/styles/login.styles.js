@@ -1,67 +1,54 @@
-// styles/login.styles.js
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import COLORS from "../../constants/colors";
-
-const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: COLORS.background,
-    padding: 20,
-    justifyContent: "center",
-  },
-  scrollViewStyle: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
   topIllustration: {
-    alignItems: "center",
+    height: "30%",
     width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   illustrationImage: {
-    width: width * 0.75,
-    height: width * 0.75,
+    width: "80%",
+    height: "80%",
   },
   card: {
     backgroundColor: COLORS.cardBackground,
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-    borderWidth: 2,
-    borderColor: COLORS.border,
-    marginTop: -24,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 30,
   },
   header: {
-    alignItems: "center",
     marginBottom: 24,
   },
   title: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: COLORS.textPrimary,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: COLORS.textDark,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: COLORS.textSecondary,
-    textAlign: "center",
-  },
-  formContainer: {
     marginBottom: 16,
   },
+  formContainer: {
+    width: "100%",
+  },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   label: {
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: "600",
     color: COLORS.textPrimary,
-    fontWeight: "500",
+    marginBottom: 8,
   },
   inputContainer: {
     flexDirection: "row",
@@ -70,31 +57,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.border,
-    paddingHorizontal: 12,
+    height: 56,
   },
   inputIcon: {
-    marginRight: 10,
+    marginHorizontal: 16,
+  },
+  eyeIcon: {
+    padding: 16,
   },
   input: {
     flex: 1,
-    height: 48,
+    height: "100%",
     color: COLORS.textDark,
-  },
-  eyeIcon: {
-    padding: 8,
+    fontSize: 16,
   },
   button: {
     backgroundColor: COLORS.primary,
+    height: 56,
     borderRadius: 12,
-    height: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 16,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    marginBottom: 16,
   },
   buttonText: {
     color: COLORS.white,
@@ -104,14 +87,26 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 24,
+    alignItems: "center",
+    marginTop: 16,
   },
-  footerText: {
+  footertext: {
     color: COLORS.textSecondary,
-    marginRight: 5,
+    marginRight: 4,
   },
   link: {
     color: COLORS.primary,
+    fontWeight: "600",
+  },
+  resendButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 8,
+    padding: 8,
+  },
+  resendText: {
+    color: COLORS.primary,
+    fontSize: 14,
     fontWeight: "600",
   },
 });

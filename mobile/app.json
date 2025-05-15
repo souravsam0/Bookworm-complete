@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bookworm.me"
+      "bundleIdentifier": "com.bookworm.staging"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.bookworm.me"
+      "package": "com.bookworm.staging"
     },
     "web": {
       "bundler": "metro",
